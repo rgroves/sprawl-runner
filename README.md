@@ -29,3 +29,58 @@ pip install sprawl-runner
 ## License
 
 `sprawl-runner` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+
+-----
+
+## Developer Notes
+
+Because I will likely forget these things if I don't jot them down now...
+
+### Local dev dir (WSL)
+
+```text
+/home/rgroves/sprawl-runner
+```
+
+This is my first time using hatch, so after some exploring its usages I want to note some of the cli things I want to remember:
+
+### Start a shell with an active virtual environment
+
+```shell
+hatch shell
+```
+
+### Show dependencies
+
+```shell
+# show both env and project dependencies
+hatch dep show table
+
+# show only env dependencies
+hatch dep show table -e
+
+# show only project dependencies
+hatch dep show table -p
+```
+
+### Run linting and formatting
+
+```shell
+hatch fmt
+```
+
+### Run tests
+
+```shell
+# run tests using current environement
+hatch run test
+
+# run tests for all compatible environments
+hatch run all:test
+```
+
+### Run mypy type checks
+
+```shell
+hatch run types:check
+```
