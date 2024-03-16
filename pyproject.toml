@@ -37,6 +37,9 @@ Documentation = "https://github.com/unknown/sprawl-runner#readme"
 Issues = "https://github.com/unknown/sprawl-runner/issues"
 Source = "https://github.com/unknown/sprawl-runner"
 
+[project.scripts]
+sprawl-runner = "sprawl_runner.main:main"
+
 [tool.hatch.version]
 path = "src/sprawl_runner/__about__.py"
 
