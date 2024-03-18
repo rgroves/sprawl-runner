@@ -38,13 +38,13 @@ class TestGame:
 
         mocked_console.emit.assert_called_once_with(data)
 
-    def test_play_does_not_transition_state_when_no_state_is_set(self, mocked_console, mocked_state):
+    def test_play_raises_runtime_error_when_no_state_is_set(self, mocked_console):
         game = Game(mocked_console)
         assert game._state is None  # noqa: SLF001
+        msg = "Invalid game state encountered."
 
-        game.play()
-
-        mocked_state.transition.assert_not_called()
+        with pytest.raises(RuntimeError, match=msg):
+            game.play()
 
     def test_play_does_not_transition_state_when_state_is_terminal(self, mocked_console, mocked_state):
         game = Game(mocked_console)

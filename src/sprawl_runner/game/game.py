@@ -21,7 +21,8 @@ class Game:
 
     def play(self) -> None:
         if not self._state:
-            return  # TODO: this should raise a custom exception instead of returning.
+            msg = "Invalid game state encountered."
+            raise RuntimeError(msg)
 
         while not self._state.is_terminal_state:
             self._state.transition()
