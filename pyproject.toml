@@ -70,9 +70,10 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 [tool.hatch.envs.types]
 dependencies = [
   "mypy>=1.0.0",
+  "pytest",
 ]
 [tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/sprawl_runner tests}"
+check = "mypy --install-types --disallow-untyped-calls --non-interactive {args:src/sprawl_runner tests}"
 
 [tool.coverage.run]
 source_pkgs = ["sprawl_runner", "tests"]
