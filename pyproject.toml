@@ -30,7 +30,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Games/Entertainment",
 ]
-dependencies = []
+dependencies = [
+  "typing_extensions",
+]
 
 [project.urls]
 Documentation = "https://github.com/unknown/sprawl-runner#readme"
@@ -47,6 +49,7 @@ path = "src/sprawl_runner/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "pytest-mock",
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
