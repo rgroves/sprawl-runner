@@ -81,6 +81,7 @@ branch = true
 parallel = true
 omit = [
   "src/sprawl_runner/__about__.py",
+  "src/sprawl_runner/__main__.py",
 ]
 
 [tool.coverage.paths]
