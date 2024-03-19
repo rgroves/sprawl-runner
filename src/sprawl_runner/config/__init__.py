@@ -16,12 +16,13 @@ def _set_config_path() -> str:
 
 
 def _load_settings() -> GameSettings:
+    default_model = "gpt-3.5-turbo"
     config_parser = configparser.ConfigParser()
     has_loaded = config_path in config_parser.read(config_path)
     return {
         "has_loaded": has_loaded,
         "openai_api_key": config_parser.get("OpenAI", "openai_api_key", fallback=""),
-        "openai_model": config_parser.get("OpenAI", "openai_model", fallback=""),
+        "openai_model": config_parser.get("OpenAI", "openai_model", fallback=default_model),
     }
 
 
