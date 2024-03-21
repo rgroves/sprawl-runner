@@ -1,0 +1,29 @@
+{
+  "name": "register_locations",
+  "description": "Registers metadata for Locations that exist in the game world.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "locations": {
+        "type": "array",
+        "description": "An array of locations, each with a name, type, and description.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["rest", "employment"]
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["name", "type", "description"]
+        }
+      }
+    }
+  }
+}

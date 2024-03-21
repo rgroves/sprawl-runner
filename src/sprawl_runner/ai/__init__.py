@@ -32,11 +32,15 @@ def create_assistant(name: str, openai_api_key: str, openai_model: str, instruct
 
 
 def register_tools(client: OpenAI, assistant: Assistant):
-    tool_metadata = data.load_tool_metadata("register-factions")
-    function_definition: FunctionDefinition = json.loads(tool_metadata)
-    tool_param: AssistantToolParam = {
-        "type": "function",
-        "function": function_definition,
-    }
-    tools: list[AssistantToolParam] = [tool_param]
+    tool_metadata_list = data.load_all_tool_metadata()
+    tools: list[AssistantToolParam] = []
+
+    for tool_metadata in tool_metadata_list:
+        function_definition: FunctionDefinition = json.loads(tool_metadata)
+        tool_param: AssistantToolParam = {
+            "type": "function",
+            "function": function_definition,
+        }
+        tools.append(tool_param)
+
     assistant = client.beta.assistants.update(assistant.id, tools=tools)

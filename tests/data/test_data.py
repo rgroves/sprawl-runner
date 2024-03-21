@@ -1,10 +1,16 @@
+import os
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
 import sprawl_runner
-from sprawl_runner.data import _TOOL_METADATA_DIR, load_data, load_tool_metadata
+from sprawl_runner.data import (
+    _TOOL_METADATA_DIR,
+    load_all_tool_metadata,
+    load_data,
+    load_tool_metadata,
+)
 
 FAKE_MODULE_PATH_PARENT = "/fake/path/to/sprawl_runner"
 FAKE_MODULE_PATH = f"{FAKE_MODULE_PATH_PARENT}/__init__.py"
@@ -89,3 +95,40 @@ def test_load_tool_metadata2(mocker):
     load_tool_metadata(tool_file_name)
 
     mocked_load_data.assert_called_once_with(tool_file_name, _TOOL_METADATA_DIR)
+
+
+@pytest.mark.usefixtures("mock_sprawl_runner_path")
+def test_load_all_tool_metadata_loads_successfully(monkeypatch):
+    mock_files = ["tool1.json", "tool2.json"]
+    mock_metadata = ["metadata1", "metadata2"]
+
+    mock_scandir = MagicMock(
+        side_effect=lambda _: [
+            MagicMock(is_file=MagicMock(return_value=name.endswith(".json")), name=name) for name in mock_files
+        ]
+    )
+    monkeypatch.setattr(os, "scandir", mock_scandir)
+
+    with patch("sprawl_runner.data.load_data", side_effect=mock_metadata) as mock_load_data:
+        metadata = load_all_tool_metadata()
+        assert metadata == mock_metadata
+        assert mock_load_data.call_count == len(mock_files)
+
+
+@pytest.mark.usefixtures("mock_sprawl_runner_path")
+def test_load_all_tool_metadata_ignores_non_json_files(monkeypatch):
+    mock_json_files = ["tool1.json", "tool2.json"]
+    mock_files = [*mock_json_files, "non-tool1", "non-tool2"]
+    mock_metadata = ["metadata1", "metadata2"]
+
+    mock_scandir = MagicMock(
+        side_effect=lambda _: [
+            MagicMock(is_file=MagicMock(return_value=name.endswith(".json")), name=name) for name in mock_files
+        ]
+    )
+    monkeypatch.setattr(os, "scandir", mock_scandir)
+
+    with patch("sprawl_runner.data.load_data", side_effect=mock_metadata) as mock_load_data:
+        metadata = load_all_tool_metadata()
+        assert metadata == mock_metadata
+        assert mock_load_data.call_count == len(mock_json_files)

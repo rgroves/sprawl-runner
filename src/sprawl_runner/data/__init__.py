@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import os
 from pathlib import Path
 
 import sprawl_runner
@@ -26,3 +29,19 @@ def load_tool_metadata(tool_file_name: str) -> str:
         tool_file_name += ".json"
 
     return load_data(tool_file_name, _TOOL_METADATA_DIR)
+
+
+def load_all_tool_metadata() -> list[str]:
+    module_path = Path(sprawl_runner.__file__).parent
+    base_path = Path(module_path, _DATA_DIR, _TOOL_METADATA_DIR)
+
+    tool_file_names = [
+        entry.name for entry in os.scandir(base_path) if entry.is_file() and entry.name.endswith(".json")
+    ]
+
+    tool_metadata = []
+    for tool_file_name in tool_file_names:
+        metadata = load_data(tool_file_name, _TOOL_METADATA_DIR)
+        tool_metadata.append(metadata)
+
+    return tool_metadata
