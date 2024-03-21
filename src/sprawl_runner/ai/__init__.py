@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from openai.types.shared_params import FunctionDefinition
 
 
-DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL = "gpt-3.5-turbo-0125"
 
 
 def get_openai_client(openai_api_key: str) -> OpenAI:
