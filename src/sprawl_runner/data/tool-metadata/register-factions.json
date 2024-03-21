@@ -1,0 +1,28 @@
+{
+  "name": "register_factions",
+  "description": "Registers metadata for Factions that exist in the game world.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "factions": {
+        "type": "array",
+        "description": "An array of factions, each with a name, description, and motivation.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "motivation": {
+              "type": "string"
+            }
+          },
+          "required": ["name", "description", "motiviation"]
+        }
+      }
+    }
+  }
+}

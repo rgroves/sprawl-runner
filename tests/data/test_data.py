@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, mock_open, patch
 import pytest
 
 import sprawl_runner
-from sprawl_runner.data import load_data
+from sprawl_runner.data import _TOOL_METADATA_DIR, load_data, load_tool_metadata
 
 FAKE_MODULE_PATH_PARENT = "/fake/path/to/sprawl_runner"
 FAKE_MODULE_PATH = f"{FAKE_MODULE_PATH_PARENT}/__init__.py"
@@ -70,3 +70,22 @@ def test_load_data_raises_when_file_outside_intended_directory(monkeypatch):
     with pytest.raises(FileNotFoundError) as excinfo:
         load_data("test_file.txt")
     assert "Attempted path traversal detected or file does not exist" in str(excinfo.value)
+
+
+def test_load_tool_metadata_adds_json_extension_if_missing(mocker):
+    mocked_load_data = mocker.patch("sprawl_runner.data.load_data")
+    tool_file_name = "tool-name"
+    tool_file_name_json = f"{tool_file_name}.json"
+
+    load_tool_metadata(tool_file_name)
+
+    mocked_load_data.assert_called_once_with(tool_file_name_json, _TOOL_METADATA_DIR)
+
+
+def test_load_tool_metadata2(mocker):
+    mocked_load_data = mocker.patch("sprawl_runner.data.load_data")
+    tool_file_name = "tool-name.json"
+
+    load_tool_metadata(tool_file_name)
+
+    mocked_load_data.assert_called_once_with(tool_file_name, _TOOL_METADATA_DIR)

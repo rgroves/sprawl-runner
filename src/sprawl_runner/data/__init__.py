@@ -2,10 +2,13 @@ from pathlib import Path
 
 import sprawl_runner
 
+_DATA_DIR = "data"
+_TOOL_METADATA_DIR = "tool-metadata"
 
-def load_data(file: str):
+
+def load_data(file: str, sub_dir: str = "") -> str:
     module_path = Path(sprawl_runner.__file__).parent
-    base_path = Path(module_path, "data")
+    base_path = Path(module_path, _DATA_DIR, sub_dir)
     file_path = Path(base_path, file)
     abs_path = file_path.resolve()
 
@@ -16,3 +19,10 @@ def load_data(file: str):
 
     with open(file_path) as input_file:
         return input_file.read()
+
+
+def load_tool_metadata(tool_file_name: str) -> str:
+    if not tool_file_name.endswith(".json"):
+        tool_file_name += ".json"
+
+    return load_data(tool_file_name, _TOOL_METADATA_DIR)

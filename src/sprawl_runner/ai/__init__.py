@@ -1,13 +1,15 @@
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
 from openai import OpenAI
 
+from sprawl_runner import data
+
 if TYPE_CHECKING:
     from openai.types.beta.assistant import Assistant
     from openai.types.beta.assistant_tool_param import AssistantToolParam
-    from openai.types.beta.function_tool_param import FunctionToolParam
     from openai.types.shared_params import FunctionDefinition
 
 
@@ -30,32 +32,11 @@ def create_assistant(name: str, openai_api_key: str, openai_model: str, instruct
 
 
 def register_tools(client: OpenAI, assistant: Assistant):
-    register_factions_definition: FunctionDefinition = {
-        "name": "register_factions",
-        "description": "Provides details of the factions that exist in the game world.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "factions": {
-                    "type": "array",
-                    "description": "An array of factions, each with a name, description, and motivation.",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {"type": "string"},
-                            "description": {"type": "string"},
-                            "motivation": {"type": "string"},
-                        },
-                        "required": ["name", "description", "motiviation"],
-                    },
-                }
-            },
-        },
-    }
-
-    function_def: FunctionToolParam = {
+    tool_metadata = data.load_tool_metadata("register-factions")
+    function_definition: FunctionDefinition = json.loads(tool_metadata)
+    tool_param: AssistantToolParam = {
         "type": "function",
-        "function": register_factions_definition,
+        "function": function_definition,
     }
-    tools: list[AssistantToolParam] = [function_def]
+    tools: list[AssistantToolParam] = [tool_param]
     assistant = client.beta.assistants.update(assistant.id, tools=tools)
