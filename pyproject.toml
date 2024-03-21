@@ -30,7 +30,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Games/Entertainment",
 ]
-dependencies = []
+dependencies = ["openai"]
 
 [project.urls]
 Documentation = "https://github.com/unknown/sprawl-runner#readme"
