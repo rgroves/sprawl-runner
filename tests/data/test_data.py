@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
@@ -108,11 +109,14 @@ def test_load_all_tool_metadata_loads_successfully(monkeypatch):
         ]
     )
     monkeypatch.setattr(os, "scandir", mock_scandir)
+    mock_json_loads = MagicMock(side_effect=[mock_metadata[0], mock_metadata[1]])
+    monkeypatch.setattr(json, "loads", mock_json_loads)
 
     with patch("sprawl_runner.data.load_data", side_effect=mock_metadata) as mock_load_data:
         metadata = load_all_tool_metadata()
         assert metadata == mock_metadata
         assert mock_load_data.call_count == len(mock_files)
+        assert mock_json_loads.call_count == len(mock_files)
 
 
 @pytest.mark.usefixtures("mock_sprawl_runner_path")
@@ -120,6 +124,8 @@ def test_load_all_tool_metadata_ignores_non_json_files(monkeypatch):
     mock_json_files = ["tool1.json", "tool2.json"]
     mock_files = [*mock_json_files, "non-tool1", "non-tool2"]
     mock_metadata = ["metadata1", "metadata2"]
+    mock_json_loads = MagicMock(side_effect=[mock_metadata[0], mock_metadata[1]])
+    monkeypatch.setattr(json, "loads", mock_json_loads)
 
     mock_scandir = MagicMock(
         side_effect=lambda _: [

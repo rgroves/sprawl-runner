@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
+from typing import Any
 
 import sprawl_runner
 
@@ -31,7 +33,7 @@ def load_tool_metadata(tool_file_name: str) -> str:
     return load_data(tool_file_name, _TOOL_METADATA_DIR)
 
 
-def load_all_tool_metadata() -> list[str]:
+def load_all_tool_metadata() -> list[Any]:
     module_path = Path(sprawl_runner.__file__).parent
     base_path = Path(module_path, _DATA_DIR, _TOOL_METADATA_DIR)
 
@@ -42,6 +44,6 @@ def load_all_tool_metadata() -> list[str]:
     tool_metadata = []
     for tool_file_name in tool_file_names:
         metadata = load_data(tool_file_name, _TOOL_METADATA_DIR)
-        tool_metadata.append(metadata)
+        tool_metadata.append(json.loads(metadata))
 
     return tool_metadata
