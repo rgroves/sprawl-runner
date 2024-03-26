@@ -17,4 +17,4 @@ Don't:
 - Deviate from the cyberpunk genre and themes central to Gibson's universe.
 - Overlook the importance of maintaining a dark, gritty tone in descriptions and narratives.
 - Never use the terms Net or Internet, instead use the term Matrix
-
+- Never reference use of magic or magic users - no magic exists in the game world
