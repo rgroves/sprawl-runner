@@ -1,0 +1,23 @@
+The game requires various 4 locations for the player to visit.
+
+Here are two Rest location examples (do not use these exact examples in your output):
+
+1. SysSleep
+- Type: Rest
+- Description: A cheap motel with small rooms and minimum security.
+
+2. The NightyByte
+- Type: Rest
+- Description: A low-rent motel for passers through and those who cannot afford better.
+
+Here are two Employment location examples:
+
+1. The Cold Zero
+- Type: Employment
+- Description: A nightclub where dub and techno are the backdrop for all kinds of connections being made.
+
+2. The Data Dive
+- Type: Employment
+- Description: A pub that is frequented by the movers and shakers of the underground hacking scene.
+
+Please generate and register 4 locations, only 2 should be Rest type locations.

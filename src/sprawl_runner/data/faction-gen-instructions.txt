@@ -1,0 +1,17 @@
+Gibson novels include factions like the Yakuza, Panther Moderns, Big Scientists, Zionites, and Lo-Teks. 
+
+Factions within the game must have the following properties:
+
+- Name: A required short name with in Gibson's style.
+- Description: A required brief explaination of who they are as a group.
+- Motivation: A required brief explaination of what the group's primary motivation is.
+
+Here is an example Faction:
+
+Name: The Voidists
+Description: An anarchistic group of ex-corporate boot lickers who have been pushed over the edge mentally.
+Motivation: Their primary motivation is to bring forth chaos into the world, especially at the cost of big corporations.
+
+Please generate and register 4 factions.
+
+If you receive a reply of OK, do nothing; Otherwise reply with "Error: Failed to register Factions".
