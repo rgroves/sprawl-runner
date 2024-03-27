@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import json
+import time
 from collections import deque
 from typing import TYPE_CHECKING
 
 from openai import OpenAI
 
 if TYPE_CHECKING:
+    from openai.types.beta.thread import Thread
+    from openai.types.beta.threads.message_content import MessageContent
     from openai.types.beta.threads.required_action_function_tool_call import (
         RequiredActionFunctionToolCall,
     )
@@ -22,6 +25,7 @@ class AssistantMessageBus:
         self._assistant_id = openai_assistant_id
         self._active_runs: deque[Run] = deque()
         self._tool_handlers: dict[ToolName, ToolHandler] = {}
+        self._narrative_thread: Thread | None = None
 
     def _get_tool_handler(self, function_name) -> ToolHandler | None:
         return self._tool_handlers.get(function_name)
@@ -103,3 +107,44 @@ class AssistantMessageBus:
     def register_tool_handlers(self, tool_handlers: list[ToolHandlerEntry]):
         for tool_name, handler in tool_handlers:
             self.register_tool_handler(tool_name, handler)
+
+    def process_narrative_message(self, content: str) -> str:
+        openai_client = OpenAI(api_key=self._openai_api_key)
+
+        # TODO: probably should move this so it is only done once
+        if not self._narrative_thread:
+            self._narrative_thread = openai_client.beta.threads.create()
+
+        openai_client.beta.threads.messages.create(
+            thread_id=self._narrative_thread.id,
+            role="user",
+            content=content,
+        )
+        run = openai_client.beta.threads.runs.create(
+            thread_id=self._narrative_thread.id,
+            assistant_id=self._assistant_id,
+        )
+
+        # wait on run
+        while run.status in ("queued", "in_progress"):
+            run = openai_client.beta.threads.runs.retrieve(
+                thread_id=run.thread_id,
+                run_id=run.id,
+            )
+            print("...[thinking]...")  # noqa T201
+            time.sleep(1)
+
+        messages = openai_client.beta.threads.messages.list(thread_id=run.thread_id)
+        narrative_content: MessageContent = messages.data[0].content[0]
+        show_json(messages)
+        if narrative_content.type == "text":
+            output = narrative_content.text.value
+        return output
+
+
+def show_json(obj) -> None:
+    import pprint
+
+    print("\n\n>>>")  # noqa T201
+    pprint.pprint(json.loads(obj.model_dump_json()), indent=2, width=140, compact=True)  # noqa T201
+    print("<<<\n")  # noqa T201
