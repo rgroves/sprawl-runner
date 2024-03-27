@@ -3,18 +3,18 @@ from sprawl_runner.game.states.start_game import StartGame
 
 
 class TestStartGame:
-    def test_action_returns_end_game_state_if_enter_is_hit(self, mocker):
+    def test_action_returns_different_state_if_input_is_not_q(self, mocker):
         mocker.patch("builtins.input", return_value="")
         state = StartGame()
 
         new_state = state.action()
 
-        assert type(new_state) == EndGame
+        assert type(new_state) != type(state)
 
-    def test_action_returns_none_if_enter_is_not_hit(self, mocker):
-        mocker.patch("builtins.input", return_value=mocker.MagicMock())
+    def test_action_returns_end_game_state_if_input_is_q(self, mocker):
+        mocker.patch("builtins.input", return_value="q")
         state = StartGame()
 
         new_state = state.action()
 
-        assert new_state is None
+        assert type(new_state) is EndGame

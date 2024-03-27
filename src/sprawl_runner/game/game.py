@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, TypedDict
 
 from sprawl_runner.ai.constants import TOOL_REGISTER_FACTIONS, TOOL_REGISTER_LOCATIONS
@@ -24,12 +25,15 @@ class Location(TypedDict):
 
 
 class Game:
+    MAX_ITERS_WITHOUT_STATE_CHANGE = 15
+
     def __init__(self, console: Console):
         self._console = console
         self._message_bus: AssistantMessageBus | None = None
         self._state: GameState | None = None
         self.factions: list[Faction] = []
         self.locations: list[Location] = []
+        self.iterations_without_state_change = 0
 
     @property
     def message_bus(self):
@@ -54,8 +58,10 @@ class Game:
         ]
 
     def change_state(self, new_state: GameState):
-        new_state.game = self
-        self._state = new_state
+        if self._state != new_state:
+            new_state.game = self
+            self._state = new_state
+            self.iterations_without_state_change = 0
 
     def emit(self, data: str) -> None:
         self._console.emit(data)
@@ -67,6 +73,13 @@ class Game:
 
         while not self._state.is_terminal_state:
             self._state.transition()
+            self.iterations_without_state_change += 1
+            if self.iterations_without_state_change > self.MAX_ITERS_WITHOUT_STATE_CHANGE:
+                # Safety check in case there is a "stuck in state" issue.
+                # This shouldn't happen... <cough!>
+                # If the OpenAI Assistant doesn't make the expected tool calls it can happen.
+                self.emit("There was a glitch in the Matrix.")
+                sys.exit(1)
 
     def register_factions(self, arguments: dict[str, list]) -> str:
         for entry in arguments["factions"]:
